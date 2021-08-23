@@ -17,6 +17,7 @@ contract Dex is Wallet {
         uint price;
     }
 
+    // maps a ticker to a mapping that (idk)
     mapping(bytes32 => mapping(uint => Order[])) orderbook;
 
     function getOrderBook(bytes32 ticker, Side side) view public returns(Order[] memory) {
