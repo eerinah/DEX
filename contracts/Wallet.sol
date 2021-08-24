@@ -9,7 +9,6 @@ contract Wallet is Ownable {
   using SafeMath for uint256;
 
   struct Token {
-  //  uint256 arrIndex;
     bytes32 ticker;
     address tokenAddress;
   }
@@ -19,11 +18,13 @@ contract Wallet is Ownable {
 
   mapping(address => mapping(bytes32 => uint256)) public balances; // bytes32 is the token symbol
 
+// modifiers 
   modifier tokenExists(bytes32 _ticker) {
     require(tokenMapping[_ticker].tokenAddress != address(0), "Token does not exist");
     _;
   }
 
+// functions 
   function addToken(bytes32 _ticker, address _tokenAddress) onlyOwner external {
     tokenMapping[_ticker] = Token(_ticker, _tokenAddress);
     tokenList.push(_ticker);
@@ -47,5 +48,15 @@ contract Wallet is Ownable {
     IERC20(tokenMapping[_ticker].tokenAddress).transfer(msg.sender, _amount);
 
     assert(balances[msg.sender][_ticker] == ogBalance - _amount);
+  }
+
+  function depositEth() payable external {
+     balances[msg.sender][bytes32("ETH")] = balances[msg.sender][bytes32("ETH")].add(msg.value);
+  }
+    
+  function withdrawEth(uint amount) external {
+      require(balances[msg.sender][bytes32("ETH")] >= amount,'Insuffient balance'); 
+      balances[msg.sender][bytes32("ETH")] = balances[msg.sender][bytes32("ETH")].sub(amount);
+      msg.sender.call{value:amount}("");
   }
 }
