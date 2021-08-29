@@ -50,7 +50,7 @@ contract Wallet is Ownable {
     assert(balances[msg.sender][_ticker] == ogBalance - _amount);
   }
 
-  function depositEth() payable external {
+  function depositETH() payable external {
      balances[msg.sender][bytes32("ETH")] = balances[msg.sender][bytes32("ETH")].add(msg.value);
   }
     
